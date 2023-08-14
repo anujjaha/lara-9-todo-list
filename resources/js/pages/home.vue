@@ -37,11 +37,14 @@
                                 </button>
                                 <button v-else @click.prevent="addTodo" class="btn btn-primary">Add</button>
                             </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                              <input class="form-control mt-2" @keyup="filter" type="text" name="filter" id="filter" placeholder="Search...">
+                            </div>
                         </form>
                     </section>
                     <section id="todo-actions"></section>
                     <section id="todo-list">
-                        <ul class="list-group">
+                        <ul class="list-group" id="todoListContainer">
                             <div v-if="todos.isLoading" class="text-center">
                                 <div class="spinner-border" role="status">
                                     <span class="sr-only">Loading...</span>
@@ -51,7 +54,7 @@
                                 v-for="todo in todos.data" :key="todo.uuid"
                                 class="list-group-item">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    {{ todo.content }}
+                                    <span class="todo-content">{{ todo.content }}</span>
                                     <span class="d-flex justify-content-between align-items-center">
                                         <a class="text-danger" href="#" @click.prevent="destroy(todo)">
                                             <i class="fa fa-trash-o"></i> Delete
@@ -118,6 +121,25 @@ import $ from 'jquery'
                     // disable loader
                     this.todos.isLoading = false;
                 })
+            },
+
+            /**
+             * Local Search.
+             * Uses to filter todo list
+             */
+            filter() {
+              let input = document.getElementById('filter').value.toLowerCase();
+              var list = document.getElementsByTagName('li');
+              
+              for(let i = 1; i < list.length; i++)
+              {
+                let value = list[i].getElementsByClassName('todo-content')[0].innerText;
+                if (value.toLowerCase().indexOf(input) > -1) {
+                    list[i].style.display = 'block';
+                } else {
+                    list[i].style.display = 'none';
+                }
+              }
             },
 
             /**
